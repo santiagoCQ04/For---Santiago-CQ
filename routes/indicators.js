@@ -1,12 +1,13 @@
 import { Router } from "express";
 import httpIndicators from "../controllers/indicators.js";
 import { check } from "express-validator";
-import validateFields from "../middlewares/ChecksIndicators.js";
+import validateFields from "../middlewares/Checksindicators.js";
 
 const routes = Router();
 
 
 routes.get("/api/indicators", httpIndicators.getIndicators,);
+
 routes.get("/api/indicators/:id",[
  check("id").isMongoId().withMessage("ID de Indicador no válido").trim(),
     validateFields
