@@ -46,26 +46,61 @@ import Indicators from "../models/indicators.js";
         }
      },
 
-      getIndicatorsByPeriod: async (req, res)=>{
-        try {
-            const periodId = req.params.periodId;
-            const indicators = await Indicators.find ( { period: periodId })
-            .populate('academicLoad')
-                .populate('period')
-                .populate('userWhoDidIt');
-            res.status(200).json({message:"Indicadores por Periodo", indicators})
+      getIndicatorsByPeriod: async (req, res) => {
+    try {
+        const periodId = req.params.periodsId;
 
-        } catch (error) {
-            res.status(500).json({message:"Error al obtener los Indicadores por Periodo", error: error.message})
+        
+        if (!periodId) {
+            return res.status(400).json({
+                message: "El ID del periodo es requerido"
+            });
         }
-      },
+
+
+        // Buscar indicadores para ese periodo
+        const indicators = await Indicators.find({ 
+            period: periodId,
+            active: true  
+        })
+        .populate('academicLoad')
+        .populate('period')
+        .populate('userWhoDidIt')
+        .lean();
+
+       
+        if (!indicators || indicators.length === 0) {
+            return res.status(200).json({
+                message: "No se encontraron indicadores para este periodo",
+                periodId: periodId,
+                total: 0,
+                indicators: []
+            });
+        }
+
+        
+        return res.status(200).json({
+            message: "Indicadores encontrados",
+            periodId: periodId,
+            total: indicators.length,
+            indicators
+        });
+
+    } catch (error) {
+        console.error('Error en getIndicatorsByPeriod:', error);
+        return res.status(500).json({
+            message: "Error al obtener los Indicadores por Periodo",
+            error: error.message
+        });
+    }
+},
 
          // Obtener indicadores por usuario
     getIndicatorsByUser: async (req, res) => {
         try {
             const { usersId } = req.params;
 
-        // Buscar indicadores activos para ese usuario
+        // indicadores activos para ese usuario
         const indicators = await Indicators.find({
             userWhoDidIt: usersId,
             active: true
