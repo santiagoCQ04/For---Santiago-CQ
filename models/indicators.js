@@ -2,46 +2,44 @@ import mongoose from "mongoose";
 
 const indicatorsSchema = new mongoose.Schema({
 
-    School : {
+    academicLoad: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'schools',
+        /* ref: 'AcademicLoad', */
         required: true 
     },
-    year:{type: String, required:true},
-    cluster:{ 
+    period: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'groups',
+       /*  /* ref: 'Period', */
         required: true
     },
-    subject: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'subjects',
-        required: true
+    type: [{
+        type: String
+    }],
     
-    },
-    description:{ type: String, required:true},
+    year:{type: String, required:true}, 
 
-    period:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'periods',
+    description: { 
+        type: String, 
         required: true
     },
-
-    qualification:{
+    performanceIndicators: {
         type: String,
-        enum: ['Superior', 'Alto', 'Basico', 'Bajo'],
+        enum: ['Alto', 'Medio', 'Bajo', 'Excelente', 'Regular', 'Deficiente'],
         required: true 
     },
-    userWhoDidIt:{
+    userWhoDidIt: {
         type: mongoose.Schema.Types.ObjectId,
-        ref:'modelusers',
+        /* ref: 'User', */
         required: true
-
     },
-     active: { type: Boolean, default: true }
+    active: { 
+        type: Boolean, 
+        default: true 
+    }
 
-})
+}, {
+    timestamps: true
+});
 
 const Indicators = mongoose.model('Indicators', indicatorsSchema);
-
 export default Indicators;
